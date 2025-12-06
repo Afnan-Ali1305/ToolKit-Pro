@@ -1,0 +1,414 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor – Free Online Tool</title>
+
+    <link rel="stylesheet" href="style.css"> -->
+
+    <!-- Image Compression Library -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Image Compressor</h1>
+        <p>Compress your images without losing quality.</p>
+
+        <div class="upload-box">
+            <input type="file" id="upload" accept="image/*">
+        </div>
+
+        <div id="controls" class="controls hidden">
+            <label>Compression Quality: <span id="qualityValue">0.6</span></label>
+            <input type="range" id="quality" min="0.1" max="1" step="0.1" value="0.6">
+            
+            <button id="compressBtn">Compress Image</button>
+        </div>
+
+        <div class="preview-area hidden" id="previewArea">
+            <h2>Preview</h2>
+            <div class="preview-box">
+                <div>
+                    <p>Original</p>
+                    <img id="originalImg" src="#">
+                    <p id="originalSize"></p>
+                </div>
+
+                <div>
+                    <p>Compressed</p>
+                    <img id="compressedImg" src="#">
+                    <p id="compressedSize"></p>
+                    <a id="downloadBtn" class="download-btn" download="compressed.jpg">Download</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="compressor.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor – Free Online Tool | Reduce File Size Instantly</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Image Compression Library -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+</head>
+
+<body>
+    <!-- Header with Tool Info -->
+    <header class="tool-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-compress-alt"></i>
+                <h1>ImageCompressor<span>.pro</span></h1>
+            </div>
+            <nav class="tool-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i> All Tools
+                </a>
+                <a href="#features" class="nav-link">
+                    <i class="fas fa-star"></i> Features
+                </a>
+                <a href="#help" class="nav-link">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="main-title">
+                        <span class="gradient-text">Image Compressor</span>
+                        <div class="title-sub">Free Online Tool</div>
+                    </h1>
+                    <p class="hero-description">
+                        Reduce image file sizes by up to <strong>80%</strong> without noticeable quality loss. 
+                        Perfect for web optimization, faster loading, and saving storage space.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free Tool</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">10MB</div>
+                            <div class="stat-label">Max File Size</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">Formats</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">Secure</div>
+                            <div class="stat-label">Privacy First</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-illustration">
+                    <div class="illustration-circle">
+                        <i class="fas fa-compress-alt illustration-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="section-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Upload Your Image</h2>
+                <p>Drag and drop or click to select your image file</p>
+            </div>
+            
+            <div class="upload-box" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-file-image"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drop Image Here</h3>
+                    <p>Supports JPG, PNG, WebP, GIF, BMP</p>
+                </div>
+                <input type="file" id="upload" accept="image/*" class="file-input">
+                <button class="upload-btn" onclick="document.getElementById('upload').click()">
+                    <i class="fas fa-folder-open"></i> Choose File
+                </button>
+                <div class="upload-hint">
+                    <i class="fas fa-info-circle"></i> Max file size: 10MB
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls Section -->
+        <section id="controls" class="controls-section hidden">
+            <div class="section-header">
+                <h2><i class="fas fa-sliders-h"></i> Compression Settings</h2>
+                <p>Adjust settings for optimal results</p>
+            </div>
+            
+            <div class="controls-grid">
+                <div class="control-group">
+                    <div class="control-header">
+                        <label for="quality">
+                            <i class="fas fa-tachometer-alt"></i> Quality Level
+                        </label>
+                        <span class="control-value" id="qualityValue">60%</span>
+                    </div>
+                    <input type="range" id="quality" min="10" max="100" step="5" value="60" class="range-slider">
+                    <div class="range-labels">
+                        <span>Small File</span>
+                        <span>Best Quality</span>
+                    </div>
+                    <p class="control-help">Lower = smaller file, Higher = better quality</p>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-header">
+                        <label for="outputType">
+                            <i class="fas fa-file-export"></i> Output Format
+                        </label>
+                    </div>
+                    <div class="format-buttons">
+                        <button class="format-btn active" data-format="jpg">
+                            <i class="fas fa-file-image"></i> JPG
+                        </button>
+                        <button class="format-btn" data-format="png">
+                            <i class="fas fa-file-image"></i> PNG
+                        </button>
+                        <button class="format-btn" data-format="webp">
+                            <i class="fas fa-file-image"></i> WebP
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-header">
+                        <label>
+                            <i class="fas fa-cog"></i> Advanced Options
+                        </label>
+                    </div>
+                    <div class="checkbox-options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="keepMetadata" checked>
+                            <span class="checkmark"></span>
+                            Keep image metadata
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox" id="autoCompress">
+                            <span class="checkmark"></span>
+                            Auto-compress on upload
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="compressBtn" class="primary-btn">
+                    <i class="fas fa-compress-alt"></i> Compress Image
+                </button>
+                <button id="resetBtn" class="secondary-btn">
+                    <i class="fas fa-redo"></i> Reset Settings
+                </button>
+            </div>
+        </section>
+
+        <!-- Preview Section -->
+        <section class="preview-section hidden" id="previewArea">
+            <div class="section-header">
+                <h2><i class="fas fa-eye"></i> Preview Results</h2>
+                <p>Compare original vs compressed image</p>
+            </div>
+            
+            <div class="comparison-container">
+                <!-- Original Image Card -->
+                <div class="image-card original">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-image"></i> Original Image</h3>
+                        <span class="size-badge" id="originalSize">0 KB</span>
+                    </div>
+                    <div class="image-preview">
+                        <img id="originalImg" src="#" alt="Original Image">
+                    </div>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <i class="fas fa-expand-alt"></i>
+                            <span id="originalDimensions">-</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-hdd"></i>
+                            <span id="originalSizeDetail">0 KB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comparison Arrow -->
+                <div class="comparison-arrow">
+                    <div class="arrow-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="compression-rate" id="compressionRate">
+                        0%
+                    </div>
+                </div>
+                
+                <!-- Compressed Image Card -->
+                <div class="image-card compressed">
+                    <div class="card-header">
+                        <h3><i class="fas fa-compress-alt"></i> Compressed Image</h3>
+                        <span class="size-badge success" id="compressedSize">0 KB</span>
+                    </div>
+                    <div class="image-preview">
+                        <img id="compressedImg" src="#" alt="Compressed Image">
+                    </div>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <i class="fas fa-expand-alt"></i>
+                            <span id="compressedDimensions">-</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-hdd"></i>
+                            <span id="compressedSizeDetail">0 KB</span>
+                        </div>
+                        <div class="info-item success">
+                            <i class="fas fa-chart-line"></i>
+                            <span id="savingsPercent">0% saved</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a id="downloadBtn" class="download-btn" download="compressed.jpg">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        <button class="share-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Why Use Our Compressor?</h2>
+                <p>Key features that make our tool stand out</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>100% Secure</h3>
+                    <p>All processing happens in your browser. We never upload your images to our servers.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon speed">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Optimized compression algorithms deliver results in seconds, even for large images.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon quality">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>High Quality</h3>
+                    <p>Smart algorithms maintain visual quality while significantly reducing file size.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon format">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Multiple Formats</h3>
+                    <p>Supports JPG, PNG, WebP, GIF, and BMP formats with customizable output.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Help Section -->
+        <section class="help-section" id="help">
+            <div class="section-header">
+                <h2><i class="fas fa-question-circle"></i> How to Compress Images</h2>
+                <p>Simple steps to optimize your images</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Upload Your Image</h3>
+                        <p>Click the upload area or drag & drop your image file. Supports up to 10MB.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Adjust Settings</h3>
+                        <p>Use the quality slider and format options to customize the compression.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Compress & Download</h3>
+                        <p>Click compress, preview the results, and download the optimized image.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tool-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-compress-alt"></i>
+                <span>ImageCompressor.pro</span>
+            </div>
+            <p class="footer-tagline">Free online tools for developers and creatives</p>
+            <div class="footer-links">
+                <a href="../index.html">All Tools</a>
+                <a href="#features">Features</a>
+                <a href="#help">Help</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p class="copyright">© 2024 ImageCompressor.pro – All rights reserved</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="compressor.js"></script>
+    
+    <!-- Initialize UI -->
+    <script>
+        // Your existing compressor.js logic will work with this UI
+        // All IDs are preserved: upload, quality, qualityValue, compressBtn, 
+        // originalImg, compressedImg, originalSize, compressedSize, downloadBtn
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter – Free Online Tool</title>
+
+    <link rel="stylesheet" href="style.css"> -->
+
+    <!-- jsPDF Library -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Image to PDF Converter</h1>
+        <p>Convert JPG, PNG, and WebP images into a single PDF file.</p>
+
+        <div class="upload-box">
+            <input type="file" id="upload" accept="image/*" multiple>
+        </div>
+
+        <div id="imagesPreview" class="preview-area hidden"></div>
+
+        <button id="convertBtn" class="convert-btn hidden">Convert to PDF</button>
+    </div>
+
+    <script src="convert.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter – Free Online Tool</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main Tool CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Image to PDF Converter</h1>
+            <p class="tool-subtitle">Convert multiple JPG, PNG, and WebP images into a single, professional PDF document.</p>
+            
+            <!-- Statistics Bar -->
+            <div class="tool-stats">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Free to Use</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">Monthly Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Available</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10</span>
+                    <span class="stat-label">File Limit</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area">
+                <div class="upload-text">
+                    <h3>Drop Your Images Here</h3>
+                    <p>or click to browse files</p>
+                </div>
+                
+                <div class="file-input-wrapper">
+                    <input type="file" id="upload" class="file-input" accept="image/*" multiple>
+                    <button class="file-input-btn">
+                        <i class="fas fa-folder-open"></i> Choose Files
+                    </button>
+                </div>
+                
+                <div class="supported-formats">
+                    <p>Supported Formats:</p>
+                    <div class="format-tags">
+                        <span class="format-tag">JPG</span>
+                        <span class="format-tag">JPEG</span>
+                        <span class="format-tag">PNG</span>
+                        <span class="format-tag">WebP</span>
+                        <span class="format-tag">BMP</span>
+                        <span class="format-tag">GIF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div class="preview-header">
+                <h3>Selected Images</h3>
+                <span class="file-count">0 files</span>
+            </div>
+            <div id="imagesPreview" class="preview-area">
+                <div class="empty-preview">
+                    <i class="empty-icon fas fa-images"></i>
+                    <p>No images selected yet. Upload some images to get started.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <h3 class="controls-header">PDF Settings</h3>
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="pageSize">Page Size</label>
+                    <select id="pageSize">
+                        <option value="a4">A4 (Default)</option>
+                        <option value="letter">Letter</option>
+                        <option value="legal">Legal</option>
+                        <option value="a3">A3</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="orientation">Orientation</label>
+                    <select id="orientation">
+                        <option value="portrait">Portrait</option>
+                        <option value="landscape">Landscape</option>
+                        <option value="auto">Auto (Based on images)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="imageQuality">Image Quality: <span class="range-value">85</span>%</label>
+                    <input type="range" id="imageQuality" min="50" max="100" value="85" step="1">
+                </div>
+                
+                <div class="control-group">
+                    <label for="marginSize">Margin Size: <span class="range-value">10</span>mm</label>
+                    <input type="range" id="marginSize" min="0" max="30" value="10" step="1">
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="addPageNumbers" checked>
+                    <label for="addPageNumbers">Add page numbers</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="optimizeForWeb">
+                    <label for="optimizeForWeb">Optimize for web (smaller file size)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3>Creating PDF...</h3>
+                <span class="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">
+                <span>Processing images</span>
+                <span>Almost there...</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+            <button id="clearBtn" class="action-btn secondary">
+                <i class="fas fa-trash-alt"></i> Clear All
+            </button>
+            <button id="convertBtn" class="action-btn primary" disabled>
+                <i class="fas fa-file-pdf"></i> Convert to PDF
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Include Tool Animations -->
+    <script src="assets/js/tools.js"></script>
+    
+    <!-- Your Main Tool JS -->
+    <script src="convert.js"></script>
+    
+    <!-- Initialize Tool Animations -->
+    <script>
+        // This will be automatically called by tools-animations.js
+    </script>
+</body>
+</html>

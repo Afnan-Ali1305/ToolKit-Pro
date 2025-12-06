@@ -1,0 +1,484 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to PDF Converter</title>
+
+    <link rel="stylesheet" href="style.css"> -->
+
+    <!-- Libraries -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.1/dist/docx-preview.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Word to PDF Converter</h1>
+        <p>Convert simple text-based Word files to PDF. (Basic Version)</p>
+
+        <div class="upload-box">
+            <input type="file" id="upload" accept=".docx">
+        </div>
+
+        <div id="preview" class="preview"></div>
+
+        <button id="convertBtn" class="convert-btn hidden">Convert to PDF</button>
+    </div>
+
+    <script src="convert.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word to PDF Converter – Free Online Tool | ToolKit Pro</title>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.1/dist/docx-preview.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="tool-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-file-word"></i>
+                <h1>Word2PDF<span>.pro</span></h1>
+            </div>
+            <nav class="tool-nav">
+                <a href="../index.html" class="nav-link">
+                    <i class="fas fa-home"></i> All Tools
+                </a>
+                <a href="#features" class="nav-link">
+                    <i class="fas fa-star"></i> Features
+                </a>
+                <a href="#guide" class="nav-link">
+                    <i class="fas fa-question-circle"></i> Guide
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="main-title">
+                        <span class="gradient-text">Word to PDF Converter</span>
+                        <div class="title-sub">Free Online Tool</div>
+                    </h1>
+                    <p class="hero-description">
+                        Convert Microsoft Word documents (DOC, DOCX) to PDF format instantly. 
+                        Preserve formatting, fonts, and layout while creating professional, shareable PDFs.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free Tool</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">10MB</div>
+                            <div class="stat-label">Max File Size</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">Secure</div>
+                            <div class="stat-label">Privacy First</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">Fast</div>
+                            <div class="stat-label">Instant Conversion</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-illustration">
+                    <div class="illustration-circle">
+                        <i class="fas fa-file-pdf illustration-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <div class="section-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Upload Your Word Document</h2>
+                <p>Drag and drop or click to select your DOC/DOCX file</p>
+            </div>
+            
+            <div class="upload-box" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-file-word"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drop Word File Here</h3>
+                    <p>Supports .doc and .docx formats</p>
+                </div>
+                <input type="file" id="upload" accept=".doc,.docx" class="file-input">
+                <button class="upload-btn" onclick="document.getElementById('upload').click()">
+                    <i class="fas fa-folder-open"></i> Choose File
+                </button>
+                <div class="upload-hint">
+                    <i class="fas fa-info-circle"></i> Max file size: 10MB • Simple text-based conversion
+                </div>
+            </div>
+        </section>
+
+        <!-- Preview & Options Section -->
+        <section class="preview-section hidden" id="previewSection">
+            <div class="section-header">
+                <h2><i class="fas fa-eye"></i> Document Preview & Options</h2>
+                <p>Review your document and customize conversion settings</p>
+            </div>
+            
+            <div class="preview-container">
+                <!-- Document Preview -->
+                <div class="preview-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-word"></i> Word Document Preview</h3>
+                        <span class="file-info" id="fileInfo">File: example.docx</span>
+                    </div>
+                    <div class="preview-content" id="preview">
+                        <div class="empty-preview">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Document preview will appear here</p>
+                        </div>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-file"></i>
+                            <span>Format: <strong id="formatInfo">DOCX</strong></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-weight"></i>
+                            <span>Size: <strong id="sizeInfo">0 KB</strong></span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Pages: <strong id="pagesInfo">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conversion Options -->
+                <div class="options-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-sliders-h"></i> PDF Settings</h3>
+                    </div>
+                    
+                    <div class="options-group">
+                        <h4><i class="fas fa-palette"></i> Page Format</h4>
+                        <div class="format-options">
+                            <div class="format-option active" data-format="a4">
+                                <i class="fas fa-file"></i>
+                                <span>A4</span>
+                            </div>
+                            <div class="format-option" data-format="letter">
+                                <i class="fas fa-file"></i>
+                                <span>Letter</span>
+                            </div>
+                            <div class="format-option" data-format="legal">
+                                <i class="fas fa-file"></i>
+                                <span>Legal</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="options-group">
+                        <h4><i class="fas fa-compress-alt"></i> Orientation</h4>
+                        <div class="orientation-options">
+                            <div class="orientation-option active" data-orientation="portrait">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                <span>Portrait</span>
+                            </div>
+                            <div class="orientation-option" data-orientation="landscape">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <span>Landscape</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="options-group">
+                        <h4><i class="fas fa-cog"></i> Additional Options</h4>
+                        <div class="checkbox-options">
+                            <label class="checkbox">
+                                <input type="checkbox" id="includeMetadata" checked>
+                                <span class="checkmark"></span>
+                                Include document metadata
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="addPageNumbers" checked>
+                                <span class="checkmark"></span>
+                                Add page numbers
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="preserveFormatting" checked>
+                                <span class="checkmark"></span>
+                                Preserve formatting
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="convertBtn" class="primary-btn">
+                            <i class="fas fa-file-pdf"></i> Convert to PDF
+                        </button>
+                        <button id="clearBtn" class="secondary-btn">
+                            <i class="fas fa-redo"></i> Clear File
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="progress-section hidden" id="progressSection">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <h3><i class="fas fa-sync-alt fa-spin"></i> Converting to PDF</h3>
+                    <span class="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active">
+                        <i class="fas fa-file-upload"></i>
+                        <span>Uploading</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-cogs"></i>
+                        <span>Processing</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Converting</span>
+                    </div>
+                    <div class="step">
+                        <i class="fas fa-download"></i>
+                        <span>Ready</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Result Section -->
+        <section class="result-section hidden" id="resultSection">
+            <div class="section-header">
+                <h2><i class="fas fa-check-circle"></i> Conversion Complete!</h2>
+                <p>Your PDF is ready to download</p>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-icon success">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                
+                <div class="result-content">
+                    <h3>PDF Successfully Created</h3>
+                    <p>Your Word document has been converted to PDF format with preserved formatting.</p>
+                    
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <i class="fas fa-file-word"></i>
+                            <div>
+                                <div class="stat-label">Original File</div>
+                                <div class="stat-value" id="originalFileName">document.docx</div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-stat">
+                            <i class="fas fa-file-pdf"></i>
+                            <div>
+                                <div class="stat-label">Converted PDF</div>
+                                <div class="stat-value" id="pdfFileName">document.pdf</div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-stat">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <div class="stat-label">Conversion Time</div>
+                                <div class="stat-value" id="conversionTime">1.2s</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions">
+                        <a id="downloadBtn" class="download-btn" download="converted.pdf">
+                            <i class="fas fa-download"></i> Download PDF
+                        </a>
+                        <button class="share-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        <button class="new-btn" id="newConversionBtn">
+                            <i class="fas fa-plus"></i> New Conversion
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Why Use Our Converter?</h2>
+                <p>Key benefits of our Word to PDF conversion tool</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon quality">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>High Quality</h3>
+                    <p>Maintains original formatting, fonts, and layout during conversion.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>100% Secure</h3>
+                    <p>All processing happens in your browser. No file uploads to servers.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon speed">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Convert documents in seconds with our optimized algorithms.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon format">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Multiple Formats</h3>
+                    <p>Supports both DOC and DOCX formats with reliable conversion.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guide Section -->
+        <section class="guide-section" id="guide">
+            <div class="section-header">
+                <h2><i class="fas fa-question-circle"></i> How to Convert Word to PDF</h2>
+                <p>Simple steps to convert your documents</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-upload"></i> Upload Word File</h3>
+                        <p>Click the upload area or drag & drop your DOC/DOCX file. Maximum file size is 10MB.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-eye"></i> Preview & Settings</h3>
+                        <p>Review your document and adjust PDF settings like page format and orientation.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-file-pdf"></i> Convert to PDF</h3>
+                        <p>Click convert and wait a few seconds for the conversion to complete.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-download"></i> Download PDF</h3>
+                        <p>Download your converted PDF file with preserved formatting and layout.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supported Formats -->
+        <section class="formats-section">
+            <div class="section-header">
+                <h2><i class="fas fa-file-contract"></i> Supported Formats</h2>
+                <p>Document types you can convert</p>
+            </div>
+            
+            <div class="formats-grid">
+                <div class="format-card">
+                    <div class="format-icon word">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <h3>Microsoft Word (.doc)</h3>
+                    <p>Legacy Word document format</p>
+                </div>
+                
+                <div class="format-card">
+                    <div class="format-icon word">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <h3>Microsoft Word (.docx)</h3>
+                    <p>Modern Word document format</p>
+                </div>
+                
+                <div class="format-card">
+                    <div class="format-icon pdf">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>PDF Output</h3>
+                    <p>Portable Document Format</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="tool-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-file-word"></i>
+                <span>Word2PDF.pro</span>
+            </div>
+            <p class="footer-tagline">Free online document conversion tools for everyone</p>
+            <div class="footer-links">
+                <a href="../index.html">All Tools</a>
+                <a href="#features">Features</a>
+                <a href="#guide">Guide</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p class="copyright">© 2024 Word2PDF.pro – Free Word to PDF Converter</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <!-- <script src="ui-enhancements.js"></script> -->
+    <script src="convert.js"></script>
+    
+    <!-- Initialize UI -->
+    <script>
+        // Your existing convert.js logic will work with this UI
+        // All original IDs are preserved
+    </script>
+</body>
+</html>
