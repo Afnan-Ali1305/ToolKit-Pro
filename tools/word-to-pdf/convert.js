@@ -502,9 +502,9 @@ document.addEventListener('DOMContentLoaded', function() {
             doc.setProperties({
                 title: currentFile.name.replace(/\.[^/.]+$/, ''),
                 subject: 'Converted from Word to PDF',
-                author: 'Word2PDF.pro',
+                author: 'Word2PDF',
                 keywords: 'word, pdf, conversion',
-                creator: 'Word2PDF.pro'
+                creator: 'Word2PDF'
             });
         }
         
@@ -652,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (navigator.share) {
             navigator.share({
                 title: 'Converted PDF',
-                text: 'I converted a Word document to PDF using Word2PDF.pro',
+                text: 'I converted a Word document to PDF using Word2PDF',
                 url: window.location.href
             }).catch(console.error);
         } else {
