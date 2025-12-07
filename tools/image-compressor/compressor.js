@@ -800,3 +800,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Theme Support for Tool Pages
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if theme is stored
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Create theme toggle button
+    const themeToggle = document.createElement('button');
+    themeToggle.className = 'theme-toggle';
+    themeToggle.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    themeToggle.title = 'Toggle theme';
+    
+    themeToggle.addEventListener('click', function() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.classList.add('theme-transition');
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        const icon = this.querySelector('i');
+        if (newTheme === 'dark') {
+            icon.className = 'fas fa-sun';
+        } else {
+            icon.className = 'fas fa-moon';
+        }
+        
+        setTimeout(() => {
+            html.classList.remove('theme-transition');
+        }, 300);
+    });
+    
+    document.body.appendChild(themeToggle);
+});
