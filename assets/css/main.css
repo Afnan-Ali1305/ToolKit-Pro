@@ -68,6 +68,7 @@ footer {
     color: #555;
 } */
 /* CSS Reset & Base Styles */
+*/* CSS Reset & Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -75,6 +76,7 @@ footer {
 }
 
 :root {
+    /* Light Theme Variables */
     --primary-color: #4361ee;
     --secondary-color: #3a0ca3;
     --accent-color: #4cc9f0;
@@ -90,14 +92,54 @@ footer {
     --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
     --border-radius: 12px;
     --transition: all 0.3s ease;
+    
+    /* Background & Surface Colors - Light */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #f1f3f5;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6c757d;
+    --text-tertiary: #adb5bd;
+    --border-color: #e9ecef;
+    --card-bg: #ffffff;
+    --header-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+    --primary-color: #5a7aff;
+    --secondary-color: #4f37d9;
+    --accent-color: #6bd4f8;
+    --dark-color: #0a0a1a;
+    --light-color: #121212;
+    --gray-color: #a0a0a0;
+    --success-color: #4ade80;
+    --warning-color: #fbbf24;
+    --gradient-primary: linear-gradient(135deg, #5a7aff 0%, #4f37d9 100%);
+    --gradient-accent: linear-gradient(135deg, #6bd4f8 0%, #5a7aff 100%);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+    
+    /* Background & Surface Colors - Dark */
+    --bg-primary: #0a0a1a;
+    --bg-secondary: #121212;
+    --bg-tertiary: #1a1a1a;
+    --text-primary: #f8f9fa;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --border-color: #2d3748;
+    --card-bg: #1a1a2e;
+    --header-bg: rgba(10, 10, 26, 0.95);
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    color: var(--dark-color);
-    background-color: #ffffff;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,
@@ -107,11 +149,13 @@ h4 {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     line-height: 1.3;
+    color: var(--text-primary);
 }
 
 a {
     text-decoration: none;
     color: inherit;
+    transition: var(--transition);
 }
 
 ul {
@@ -154,7 +198,7 @@ ul {
 }
 
 .btn-secondary {
-    background-color: white;
+    background-color: var(--bg-primary);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
 }
@@ -172,7 +216,7 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--header-bg);
     backdrop-filter: blur(10px);
     box-shadow: var(--shadow-sm);
     padding: 15px 0;
@@ -196,7 +240,7 @@ header {
     gap: 10px;
     font-weight: 700;
     font-size: 24px;
-    color: var(--dark-color);
+    color: var(--text-primary);
 }
 
 .logo-icon {
@@ -223,6 +267,7 @@ header {
     font-weight: 500;
     position: relative;
     padding: 5px 0;
+    color: var(--text-primary);
 }
 
 .nav-links a::after {
@@ -246,21 +291,52 @@ header {
     align-items: center;
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: rotate(15deg);
+}
+
 .mobile-menu-btn {
     display: none;
     background: none;
     border: none;
     font-size: 24px;
-    color: var(--dark-color);
+    color: var(--text-primary);
     cursor: pointer;
 }
 
 /* Hero Section */
 .hero {
     padding: 160px 0 100px;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(76, 201, 240, 0.05) 100%);
+    background: linear-gradient(135deg, 
+        rgba(67, 97, 238, 0.05) 0%, 
+        rgba(76, 201, 240, 0.05) 100%);
     position: relative;
     overflow: hidden;
+}
+
+[data-theme="dark"] .hero {
+    background: linear-gradient(135deg, 
+        rgba(90, 122, 255, 0.08) 0%, 
+        rgba(107, 212, 248, 0.08) 100%);
 }
 
 .hero::before {
@@ -270,9 +346,17 @@ header {
     right: -20%;
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0) 70%);
+    background: radial-gradient(circle, 
+        rgba(67, 97, 238, 0.1) 0%, 
+        rgba(67, 97, 238, 0) 70%);
     border-radius: 50%;
     z-index: -1;
+}
+
+[data-theme="dark"] .hero::before {
+    background: radial-gradient(circle, 
+        rgba(90, 122, 255, 0.15) 0%, 
+        rgba(90, 122, 255, 0) 70%);
 }
 
 .hero-content {
@@ -290,7 +374,7 @@ header {
 
 .hero p {
     font-size: 1.2rem;
-    color: var(--gray-color);
+    color: var(--text-secondary);
     margin-bottom: 30px;
     max-width: 500px;
 }
@@ -314,37 +398,35 @@ header {
 
 .stat-item p {
     font-size: 0.9rem;
-    color: var(--gray-color);
+    color: var(--text-secondary);
     margin: 0;
 }
 
-/* Insert image here: [Hero illustration showing people using different tools on devices] */
+/* Hero Image - Responsive */
 .hero-image {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    /* width: 40%; */
-    /* height: 300px; */
-    height: 350px;
     width: 500px;
-    background: linear-gradient(135deg, #f5f7ff 0%, #e3e9ff 100%);
-    border-radius: 20px 0 0 20px;
+    height: 350px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-lg);
     overflow: hidden;
 }
 
-.hero-image::before {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--gray-color);
-    font-size: 1rem;
-    text-align: center;
-    padding: 20px;
+.responsive-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+}
+
+[data-theme="dark"] .responsive-hero-img {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3)) 
+            brightness(0.9) 
+            contrast(1.1);
 }
 
 /* Tools Section */
@@ -359,7 +441,7 @@ header {
 }
 
 .section-header p {
-    color: var(--gray-color);
+    color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
     font-size: 1.1rem;
@@ -372,12 +454,12 @@ header {
 }
 
 .tool-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: var(--border-radius);
     padding: 30px;
     box-shadow: var(--shadow-md);
     transition: var(--transition);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
     height: 100%;
@@ -398,6 +480,32 @@ header {
     width: 100%;
     height: 5px;
     background: var(--gradient-primary);
+}
+
+/* Tool Image Styling */
+.tool-image-wrapper {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.tool-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-width: 180px;
+    transition: transform 0.3s ease;
+}
+
+.tool-card:hover .tool-image {
+    transform: scale(1.05);
 }
 
 .tool-icon {
@@ -427,10 +535,11 @@ header {
 .tool-card h3 {
     font-size: 1.5rem;
     margin-bottom: 15px;
+    color: var(--text-primary);
 }
 
 .tool-card p {
-    color: var(--gray-color);
+    color: var(--text-secondary);
     margin-bottom: 25px;
     flex-grow: 1;
 }
@@ -445,9 +554,9 @@ header {
     align-items: center;
     margin-bottom: 8px;
     font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
-/* Insert icon here: [check-circle] */
 .tool-features li::before {
     content: "✓";
     display: inline-flex;
@@ -463,6 +572,10 @@ header {
     font-weight: bold;
 }
 
+[data-theme="dark"] .tool-features li::before {
+    background-color: rgba(74, 222, 128, 0.15);
+}
+
 .tool-link {
     display: inline-flex;
     align-items: center;
@@ -470,15 +583,17 @@ header {
     color: var(--primary-color);
     font-weight: 600;
     margin-top: auto;
+    transition: var(--transition);
 }
 
 .tool-link:hover {
     gap: 12px;
+    color: var(--accent-color);
 }
 
 /* Features Section */
 .features {
-    background-color: #f9faff;
+    background-color: var(--bg-secondary);
     position: relative;
 }
 
@@ -492,6 +607,10 @@ header {
     background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M54 54H6V6h48v48z" fill="none" stroke="%234361ee" stroke-opacity="0.05" stroke-width="2"/></svg>');
 }
 
+[data-theme="dark"] .features::before {
+    background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M54 54H6V6h48v48z" fill="none" stroke="%235a7aff" stroke-opacity="0.08" stroke-width="2"/></svg>');
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -501,10 +620,11 @@ header {
 .feature-card {
     text-align: center;
     padding: 40px 30px;
-    background: white;
+    background: var(--card-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-md);
     transition: var(--transition);
+    border: 1px solid var(--border-color);
 }
 
 .feature-card:hover {
@@ -539,6 +659,11 @@ header {
 .feature-card h3 {
     margin-bottom: 15px;
     font-size: 1.4rem;
+    color: var(--text-primary);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
 }
 
 /* CTA Section */
@@ -588,10 +713,13 @@ header {
     color: var(--primary-color);
     position: relative;
     z-index: 1;
+    font-weight: 600;
 }
 
 .cta-btn:hover {
     background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
 }
 
 /* Footer */
@@ -624,6 +752,7 @@ footer {
 .footer-about p {
     opacity: 0.8;
     margin-bottom: 25px;
+    color: #d1d5db;
 }
 
 .social-icons {
@@ -640,11 +769,13 @@ footer {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    color: white;
 }
 
 .social-icon:hover {
     background: var(--primary-color);
     transform: translateY(-3px);
+    color: white;
 }
 
 .footer-links h4 {
@@ -652,6 +783,7 @@ footer {
     margin-bottom: 25px;
     position: relative;
     padding-bottom: 10px;
+    color: white;
 }
 
 .footer-links h4::after {
@@ -671,6 +803,7 @@ footer {
 .footer-links ul li a {
     opacity: 0.8;
     transition: var(--transition);
+    color: #d1d5db;
 }
 
 .footer-links ul li a:hover {
@@ -685,9 +818,17 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     opacity: 0.7;
     font-size: 0.9rem;
+    color: #9ca3af;
 }
 
 /* Responsive Styles */
+@media (max-width: 1200px) {
+    .hero-image {
+        width: 400px;
+        height: 300px;
+    }
+}
+
 @media (max-width: 992px) {
     .hero h1 {
         font-size: 2.8rem;
@@ -701,11 +842,17 @@ footer {
         margin-top: 50px;
         transform: none;
         top: 0;
+        right: 0;
     }
 
     .hero {
         padding: 140px 0 80px;
         text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 40px;
     }
 
     .hero-btns {
@@ -718,9 +865,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-
-    .nav-links,
-    .nav-cta {
+    .nav-links {
         display: none;
     }
 
@@ -753,6 +898,10 @@ footer {
     .cta-section h2 {
         font-size: 1.8rem;
     }
+    
+    .hero-image {
+        height: 300px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -771,6 +920,14 @@ footer {
     .feature-card {
         padding: 30px 20px;
     }
+    
+    .hero-image {
+        height: 250px;
+    }
+    
+    .tool-image-wrapper {
+        height: 180px;
+    }
 }
 
 /* Mobile Menu */
@@ -780,12 +937,13 @@ footer {
     right: -100%;
     width: 300px;
     height: 100%;
-    background: white;
+    background: var(--card-bg);
     box-shadow: var(--shadow-lg);
     z-index: 1001;
     transition: var(--transition);
     padding: 80px 30px 30px;
     overflow-y: auto;
+    border-left: 1px solid var(--border-color);
 }
 
 .mobile-menu.active {
@@ -800,7 +958,7 @@ footer {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: var(--dark-color);
+    color: var(--text-primary);
 }
 
 .mobile-nav-links {
@@ -814,7 +972,8 @@ footer {
     font-size: 1.1rem;
     font-weight: 500;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
 }
 
 .mobile-nav-cta {
@@ -839,4 +998,212 @@ footer {
 .overlay.active {
     opacity: 1;
     visibility: visible;
+}
+
+/* Animation for theme toggle */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.theme-toggle:hover i {
+    animation: spin 0.5s ease;
+}
+
+/* ========== THEME TOGGLE STYLES ========== */
+
+/* Theme toggle button in desktop header */
+.theme-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: var(--primary-color);
+    color: white;
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+/* Mobile theme toggle */
+.mobile-theme-toggle {
+    width: 44px;
+    height: 44px;
+    margin: 20px auto !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: 50%;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.mobile-theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Theme transition effect */
+.theme-transition * {
+    transition: background-color 0.3s ease, 
+                border-color 0.3s ease, 
+                color 0.3s ease,
+                box-shadow 0.3s ease !important;
+}
+
+/* Moon to Sun animation */
+.theme-toggle i {
+    transition: transform 0.5s ease;
+}
+
+.theme-toggle:hover i {
+    animation: spin 1s linear infinite;
+}
+
+/* Sun rays animation */
+.theme-toggle[data-theme="dark"] i.fa-sun::before {
+    display: inline-block;
+    animation: sunRays 2s ease-in-out infinite;
+}
+
+@keyframes sunRays {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+}
+
+/* Moon phases animation */
+.theme-toggle[data-theme="light"] i.fa-moon::before {
+    display: inline-block;
+    animation: moonGlow 3s ease-in-out infinite;
+}
+
+@keyframes moonGlow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* ========== DARK MODE ENHANCEMENTS ========== */
+
+/* Additional dark mode specific adjustments */
+[data-theme="dark"] .logo span {
+    color: var(--accent-color);
+}
+
+[data-theme="dark"] .hero {
+    background: linear-gradient(135deg, 
+        rgba(90, 122, 255, 0.08) 0%, 
+        rgba(107, 212, 248, 0.08) 100%);
+}
+
+[data-theme="dark"] .hero h1 {
+    background: linear-gradient(135deg, #5a7aff 0%, #6bd4f8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+[data-theme="dark"] .tool-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .tool-card:hover {
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .feature-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .cta-section {
+    background: linear-gradient(135deg, #5a7aff 0%, #4f37d9 100%);
+}
+
+[data-theme="dark"] .cta-btn {
+    background: white;
+    color: #5a7aff;
+}
+
+[data-theme="dark"] .cta-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Dark mode image adjustments */
+[data-theme="dark"] img {
+    filter: brightness(0.9) contrast(1.1);
+}
+
+[data-theme="dark"] .hero-image img {
+    filter: brightness(0.85) contrast(1.2);
+}
+
+/* ========== ACCESSIBILITY FOR THEME TOGGLE ========== */
+.theme-toggle:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.theme-toggle:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ========== TOOL CARD LOADING STATE IN DARK MODE ========== */
+[data-theme="dark"] .tool-card.loading::after {
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.05), 
+        transparent);
+}
+
+/* ========== BUTTON STATES IN DARK MODE ========== */
+[data-theme="dark"] .btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* ========== FORM ELEMENTS IN DARK MODE ========== */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(90, 122, 255, 0.2);
 }

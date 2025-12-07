@@ -71,6 +71,44 @@
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
+    
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved theme preference or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            
+            // Add theme toggle button dynamically
+            const themeToggle = document.createElement('button');
+            themeToggle.className = 'theme-toggle';
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            themeToggle.title = 'Toggle dark mode';
+            themeToggle.addEventListener('click', function() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                const icon = this.querySelector('i');
+                if (newTheme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            });
+            
+            // Insert theme toggle in header
+            const header = document.querySelector('.nav-cta');
+            if (header) {
+                header.appendChild(themeToggle);
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -93,8 +131,7 @@
             </nav>
             
             <div class="nav-cta">
-                <button class="btn btn-secondary">Sign In</button>
-                <button class="btn btn-primary">Get Started</button>
+                <!-- Theme toggle button added via JavaScript -->
             </div>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -116,8 +153,7 @@
             <a href="#contact">Contact</a>
         </div>
         <div class="mobile-nav-cta">
-            <button class="btn btn-secondary">Sign In</button>
-            <button class="btn btn-primary">Get Started</button>
+            <!-- Theme toggle added via JavaScript for mobile -->
         </div>
     </div>
     <div class="overlay" id="overlay"></div>
@@ -148,9 +184,9 @@
                 </div>
             </div>
             
-            <!-- Insert image here: [Hero illustration showing people using different tools on devices] -->
+            <!-- Responsive hero image -->
             <div class="hero-image" data-aos="fade-left" data-aos-delay="400">
-                <img src="assets/images/undraw_dashboard_p93p.svg" alt="">
+                <img src="assets/images/undraw_dashboard_p93p.svg" alt="ToolKit Pro Dashboard Illustration" class="responsive-hero-img">
             </div>
         </div>
     </section>
@@ -166,9 +202,9 @@
             <div class="tools-container">
                 <!-- Image Compressor Tool -->
                 <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
-                    <img src="assets/images/undraw_optimize-image_q59h.svg" alt="Optimize Image" style="width:200px; height:200px; margin-bottom:20px; object-fit:contain; border:1px solid #e3e3e3; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.1); background-color:#fff; display:block; margin-left:auto; margin-right:auto;">
-
-                    <!-- <img src="assets/images/undraw_optimize-image_q59h.svg" alt="Optimize Image" style="width: 120px; height: 120px; margin-bottom: 20px; object-fit: contain;"> -->
+                    <div class="tool-image-wrapper">
+                        <img src="assets/images/undraw_optimize-image_q59h.svg" alt="Optimize Image" class="tool-image">
+                    </div>
                     <h3>Image Compressor</h3>
                     <p>Reduce image file sizes by up to 80% without noticeable quality loss. Perfect for web optimization and faster loading times.</p>
                     
@@ -186,7 +222,9 @@
 
                 <!-- Image to PDF Tool -->
                 <div class="tool-card" data-aos="fade-up" data-aos-delay="200">
-                    <img src="assets/images/undraw_image-upload_7b3b.svg" alt="Image Upload" style="width: 200px;; height: 200px;; margin-bottom:20px; object-fit:contain; border:1px solid #e3e3e3; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.1); background-color:#fff; display:block; margin-left:auto; margin-right:auto;">
+                    <div class="tool-image-wrapper">
+                        <img src="assets/images/undraw_image-upload_7b3b.svg" alt="Image Upload" class="tool-image">
+                    </div>
                     <h3>Image to PDF Converter</h3>
                     <p>Convert multiple images into a single PDF document. Adjust order, orientation, and margins for professional results.</p>
                     
@@ -204,7 +242,9 @@
 
                 <!-- Word to PDF Tool -->
                 <div class="tool-card" data-aos="fade-up" data-aos-delay="300">
-                    <img src="assets/images/undraw_document-ready_o5d5.svg" alt="Document Ready" style="width: 200px;; height: 200px;; margin-bottom:20px; object-fit:contain; border:1px solid #e3e3e3; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.1); background-color:#fff; display:block; margin-left:auto; margin-right:auto;">
+                    <div class="tool-image-wrapper">
+                        <img src="assets/images/undraw_document-ready_o5d5.svg" alt="Document Ready" class="tool-image">
+                    </div>
                     <h3>Word to PDF Converter</h3>
                     <p>Convert Microsoft Word documents to PDF while preserving formatting, fonts, and layout. Perfect for sharing documents.</p>
                     
@@ -299,13 +339,9 @@
                     </div>
                     <p>Providing high-quality, free online tools since 2023. Our mission is to make professional tools accessible to everyone.</p>
                     <div class="social-icons">
-                        <!-- Insert icon here: [twitter] -->
                         <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <!-- Insert icon here: [github] -->
                         <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                        <!-- Insert icon here: [linkedin] -->
                         <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                        <!-- Insert icon here: [discord] -->
                         <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
                     </div>
                 </div>
