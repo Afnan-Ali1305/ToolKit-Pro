@@ -1,272 +1,691 @@
+// compressor.js - Main Image Compression Logic with Enhanced UI
+
+// DOM Elements
 const upload = document.getElementById('upload');
 const controls = document.getElementById('controls');
+const previewArea = document.getElementById('previewArea');
 const qualitySlider = document.getElementById('quality');
 const qualityValue = document.getElementById('qualityValue');
-const previewArea = document.getElementById('previewArea');
+const compressBtn = document.getElementById('compressBtn');
+const resetBtn = document.getElementById('resetBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const uploadArea = document.getElementById('uploadArea');
+const formatButtons = document.querySelectorAll('.format-btn');
+const keepMetadataCheckbox = document.getElementById('keepMetadata');
+const autoCompressCheckbox = document.getElementById('autoCompress');
 
+// Image Elements
 const originalImg = document.getElementById('originalImg');
 const compressedImg = document.getElementById('compressedImg');
 
+// Size Elements
 const originalSize = document.getElementById('originalSize');
 const compressedSize = document.getElementById('compressedSize');
+const originalSizeDetail = document.getElementById('originalSizeDetail');
+const compressedSizeDetail = document.getElementById('compressedSizeDetail');
 
-const compressBtn = document.getElementById('compressBtn');
-const downloadBtn = document.getElementById('downloadBtn');
+// Dimension Elements
+const originalDimensions = document.getElementById('originalDimensions');
+const compressedDimensions = document.getElementById('compressedDimensions');
 
+// Comparison Elements
+const compressionRate = document.getElementById('compressionRate');
+const savingsPercent = document.getElementById('savingsPercent');
+
+// App State
 let selectedFile = null;
+let compressedFile = null;
+let currentFormat = 'jpg';
+let isCompressing = false;
 
-// Show compression controls after image select
-upload.addEventListener('change', (e) => {
-    selectedFile = e.target.files[0];
-
-    if (!selectedFile) return;
-
-    // Show image preview
-    originalImg.src = URL.createObjectURL(selectedFile);
-    originalSize.textContent = `Size: ${(selectedFile.size / 1024).toFixed(1)} KB`;
-
-    controls.classList.remove('hidden');
-    previewArea.classList.add('hidden');
-});
-
-// Update quality value text
-qualitySlider.addEventListener('input', () => {
-    qualityValue.textContent = qualitySlider.value;
-});
-
-// Compression function
-compressBtn.addEventListener('click', async () => {
-    if (!selectedFile) return;
-
-    const options = {
-        maxWidthOrHeight: 2000,
-        maxSizeMB: 2,
-        initialQuality: parseFloat(qualitySlider.value)
-    };
-
-    const compressedFile = await imageCompression(selectedFile, options);
-    const compressedBlobUrl = URL.createObjectURL(compressedFile);
-
-    compressedImg.src = compressedBlobUrl;
-    compressedSize.textContent = `Size: ${(compressedFile.size / 1024).toFixed(1)} KB`;
-
-    downloadBtn.href = compressedBlobUrl;
-
-    previewArea.classList.remove('hidden');
-});
-
-
-// ui 
-
-// ui-enhancements.js - UI animations and enhancements for Image Compressor
-
+// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     initializeUI();
+    setupEventListeners();
+    setupDragAndDrop();
+    updateQualityDisplay();
 });
 
+// UI Initialization
 function initializeUI() {
-    // Initialize all UI enhancements
-    setupUploadArea();
-    setupRangeSlider();
-    setupFormatButtons();
-    setupCheckboxAnimations();
-    setupDragAndDrop();
-    addPageAnimations();
-    setupTooltips();
-}
-
-// Upload area animations
-function setupUploadArea() {
-    const uploadBox = document.querySelector('.upload-box');
-    const fileInput = document.getElementById('upload');
-    
-    if (!uploadBox || !fileInput) return;
-    
-    // Click on upload box triggers file input
-    uploadBox.addEventListener('click', (e) => {
-        if (e.target !== fileInput) {
-            fileInput.click();
-        }
-    });
-    
-    // File selection animation
-    fileInput.addEventListener('change', function() {
-        if (this.files.length > 0) {
-            uploadBox.classList.add('file-selected');
-            setTimeout(() => uploadBox.classList.remove('file-selected'), 1000);
-            
-            // Show controls section
-            const controls = document.getElementById('controls');
-            if (controls) {
-                controls.classList.remove('hidden');
-                controls.classList.add('visible');
-            }
-            
-            // Show success animation
-            animateUploadSuccess();
-        }
-    });
-}
-
-// Range slider with value update
-function setupRangeSlider() {
-    const qualitySlider = document.getElementById('quality');
-    const qualityValue = document.getElementById('qualityValue');
-    
-    if (!qualitySlider || !qualityValue) return;
-    
-    // Update value display
-    qualitySlider.addEventListener('input', function() {
-        const value = this.value;
-        qualityValue.textContent = `${value}%`;
-        
-        // Animate value change
-        qualityValue.classList.add('pulse');
-        setTimeout(() => qualityValue.classList.remove('pulse'), 300);
-        
-        // Update color based on value
-        updateSliderColor(this, value);
-    });
-    
-    // Initial update
-    updateSliderColor(qualitySlider, qualitySlider.value);
+    // Set initial values
     qualityValue.textContent = `${qualitySlider.value}%`;
-}
-
-function updateSliderColor(slider, value) {
-    const percent = (value - slider.min) / (slider.max - slider.min) * 100;
-    slider.style.background = `linear-gradient(to right, #4361ee ${percent}%, #e0e0e0 ${percent}%)`;
-}
-
-// Format buttons toggle
-function setupFormatButtons() {
-    const formatButtons = document.querySelectorAll('.format-btn');
     
+    // Add CSS for dynamic elements
+    addDynamicStyles();
+    
+    // Initialize slider color
+    updateSliderColor();
+}
+
+// Setup Event Listeners
+function setupEventListeners() {
+    // File upload
+    upload.addEventListener('change', handleFileSelect);
+    
+    // Quality slider
+    qualitySlider.addEventListener('input', function() {
+        updateQualityDisplay();
+        
+        // Auto-compress if enabled and we have a file
+        if (autoCompressCheckbox.checked && selectedFile && !isCompressing) {
+            compressImage();
+        }
+    });
+    
+    // Format buttons
     formatButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Remove active class from all buttons
             formatButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
             this.classList.add('active');
+            currentFormat = this.dataset.format;
             
-            // Animation
-            this.classList.add('clicked');
-            setTimeout(() => this.classList.remove('clicked'), 300);
-        });
-    });
-}
-
-// Checkbox animations
-function setupCheckboxAnimations() {
-    const checkboxes = document.querySelectorAll('.checkbox input');
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const label = this.closest('.checkbox');
-            if (this.checked) {
-                label.classList.add('checked');
-                animateCheckbox(label);
-            } else {
-                label.classList.remove('checked');
+            // Compress immediately if auto-compress is enabled
+            if (autoCompressCheckbox.checked && selectedFile && !isCompressing) {
+                compressImage();
             }
         });
     });
-}
-
-function animateCheckbox(element) {
-    element.style.transform = 'scale(1.1)';
-    setTimeout(() => {
-        element.style.transform = 'scale(1)';
-    }, 200);
-}
-
-// Drag and drop functionality
-function setupDragAndDrop() {
-    const uploadBox = document.querySelector('.upload-box');
-    if (!uploadBox) return;
     
-    // Prevent default drag behaviors
+    // Compress button
+    compressBtn.addEventListener('click', compressImage);
+    
+    // Reset button
+    resetBtn.addEventListener('click', resetApp);
+    
+    // Auto-compress checkbox
+    autoCompressCheckbox.addEventListener('change', function() {
+        if (this.checked && selectedFile && !isCompressing) {
+            compressImage();
+        }
+    });
+    
+    // Keep metadata checkbox
+    keepMetadataCheckbox.addEventListener('change', function() {
+        // This would affect compression if implemented
+        if (autoCompressCheckbox.checked && selectedFile && !isCompressing) {
+            compressImage();
+        }
+    });
+    
+    // Share button
+    document.querySelector('.share-btn')?.addEventListener('click', shareResult);
+}
+
+// Drag and Drop Functionality
+function setupDragAndDrop() {
+    if (!uploadArea) return;
+    
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadBox.addEventListener(eventName, preventDefaults, false);
+        uploadArea.addEventListener(eventName, preventDefaults, false);
         document.body.addEventListener(eventName, preventDefaults, false);
     });
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    uploadArea.addEventListener('drop', handleDrop, false);
     
     function preventDefaults(e) {
         e.preventDefault();
         e.stopPropagation();
     }
     
-    // Highlight drop zone when dragging over
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadBox.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadBox.addEventListener(eventName, unhighlight, false);
-    });
-    
     function highlight() {
-        uploadBox.classList.add('drag-over');
+        uploadArea.classList.add('drag-over');
     }
     
     function unhighlight() {
-        uploadBox.classList.remove('drag-over');
+        uploadArea.classList.remove('drag-over');
     }
-    
-    // Handle dropped files
-    uploadBox.addEventListener('drop', handleDrop, false);
     
     function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
-        const fileInput = document.getElementById('upload');
         
         if (files.length > 0) {
-            fileInput.files = files;
-            
-            // Trigger change event
-            const event = new Event('change');
-            fileInput.dispatchEvent(event);
-            
-            // Show drop animation
-            animateDropSuccess();
+            selectedFile = files[0];
+            processSelectedFile(selectedFile);
         }
     }
 }
 
-// Page load animations
-function addPageAnimations() {
-    // Animate elements on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+// File Selection Handler
+function handleFileSelect(e) {
+    selectedFile = e.target.files[0];
+    if (selectedFile) {
+        processSelectedFile(selectedFile);
+    }
+}
+
+// Process Selected File
+function processSelectedFile(file) {
+    // Validate file
+    if (!validateFile(file)) {
+        return;
+    }
     
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        originalImg.src = e.target.result;
+        originalImg.onload = function() {
+            // Update original image info
+            updateOriginalImageInfo(file);
+            
+            // Show controls
+            controls.classList.remove('hidden');
+            controls.classList.add('visible');
+            
+            // Hide preview area
+            previewArea.classList.add('hidden');
+            
+            // Show upload success animation
+            showUploadSuccess();
+            
+            // Auto-compress if enabled
+            if (autoCompressCheckbox.checked && !isCompressing) {
+                compressImage();
             }
-        });
-    }, observerOptions);
+        };
+    };
+    reader.readAsDataURL(file);
+}
+
+// Validate File
+function validateFile(file) {
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+    if (!validTypes.includes(file.type)) {
+        showNotification('Please select a valid image file (JPG, PNG, WebP, GIF, BMP)', 'error');
+        return false;
+    }
     
-    // Observe sections for animation
-    document.querySelectorAll('section').forEach(section => {
-        observer.observe(section);
-    });
+    // Check file size (10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+        showNotification('File size exceeds 10MB limit. Please select a smaller image.', 'error');
+        return false;
+    }
     
-    // Add CSS for animations
-    const style = document.createElement('style');
-    style.textContent = `
-        .animate-in {
-            animation: slideUp 0.6s ease forwards;
+    return true;
+}
+
+// Update Original Image Info
+function updateOriginalImageInfo(file) {
+    const fileSizeKB = (file.size / 1024).toFixed(1);
+    originalSize.textContent = `${fileSizeKB} KB`;
+    originalSizeDetail.textContent = `${fileSizeKB} KB`;
+    originalDimensions.textContent = `${originalImg.naturalWidth} × ${originalImg.naturalHeight}`;
+}
+
+// Update Quality Display
+function updateQualityDisplay() {
+    const value = qualitySlider.value;
+    qualityValue.textContent = `${value}%`;
+    
+    // Update slider color
+    updateSliderColor();
+    
+    // Animate value change
+    qualityValue.classList.add('pulse');
+    setTimeout(() => qualityValue.classList.remove('pulse'), 300);
+}
+
+// Update Slider Color
+function updateSliderColor() {
+    const value = parseInt(qualitySlider.value);
+    const min = parseInt(qualitySlider.min);
+    const max = parseInt(qualitySlider.max);
+    const percent = ((value - min) / (max - min)) * 100;
+    
+    // Create color gradient based on quality value
+    let color;
+    if (value >= 80) {
+        color = '#4CAF50'; // Green for high quality
+    } else if (value >= 60) {
+        color = '#8BC34A'; // Light green
+    } else if (value >= 40) {
+        color = '#FFC107'; // Yellow
+    } else if (value >= 20) {
+        color = '#FF9800'; // Orange
+    } else {
+        color = '#F44336'; // Red for low quality
+    }
+    
+    qualitySlider.style.background = `linear-gradient(to right, ${color} ${percent}%, #e0e0e0 ${percent}%)`;
+}
+
+// Main Compression Function
+async function compressImage() {
+    if (!selectedFile) {
+        showNotification('Please select an image first!', 'warning');
+        return;
+    }
+    
+    if (isCompressing) {
+        showNotification('Compression already in progress...', 'info');
+        return;
+    }
+    
+    isCompressing = true;
+    
+    try {
+        // Show loading state
+        const originalText = compressBtn.innerHTML;
+        compressBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compressing...';
+        compressBtn.disabled = true;
+        
+        // Prepare compression options
+        const quality = parseInt(qualitySlider.value) / 100;
+        
+        const options = {
+            maxSizeMB: 10,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+            fileType: currentFormat === 'jpg' ? 'image/jpeg' : `image/${currentFormat}`,
+            initialQuality: quality,
+            alwaysKeepResolution: true
+        };
+        
+        // Adjust options based on format
+        if (currentFormat === 'png') {
+            options.pngQuality = quality;
+        } else if (currentFormat === 'webp') {
+            options.webpQuality = quality;
         }
         
-        @keyframes slideUp {
+        // Convert to proper mime type for compression
+        const fileType = currentFormat === 'jpg' ? 'image/jpeg' : `image/${currentFormat}`;
+        
+        // Compress image with current settings
+        console.log('Compressing with options:', { quality, format: currentFormat });
+        compressedFile = await imageCompression(selectedFile, options);
+        
+        // Create blob URL for preview and download
+        const compressedBlobUrl = URL.createObjectURL(compressedFile);
+        
+        // Update compressed image
+        compressedImg.onload = function() {
+            // Update compressed image info
+            updateCompressedImageInfo(compressedFile);
+            
+            // Show preview area
+            previewArea.classList.remove('hidden');
+            previewArea.classList.add('visible');
+            
+            // Set up download
+            setupDownload(compressedBlobUrl);
+            
+            // Show success animation
+            showCompressionSuccess();
+            
+            // Reset button state
+            compressBtn.innerHTML = '<i class="fas fa-compress-alt"></i> Compress Image';
+            compressBtn.disabled = false;
+            isCompressing = false;
+            
+            // Scroll to preview
+            setTimeout(() => {
+                previewArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+        };
+        
+        compressedImg.onerror = function() {
+            throw new Error('Failed to load compressed image');
+        };
+        
+        compressedImg.src = compressedBlobUrl;
+        
+    } catch (error) {
+        console.error('Compression error:', error);
+        showNotification('Error compressing image. Please try again.', 'error');
+        
+        // Reset button state
+        compressBtn.innerHTML = '<i class="fas fa-compress-alt"></i> Compress Image';
+        compressBtn.disabled = false;
+        isCompressing = false;
+    }
+}
+
+// Update Compressed Image Info
+function updateCompressedImageInfo(file) {
+    const originalSizeBytes = selectedFile.size;
+    const compressedSizeBytes = file.size;
+    const fileSizeKB = (compressedSizeBytes / 1024).toFixed(1);
+    
+    // Update sizes
+    compressedSize.textContent = `${fileSizeKB} KB`;
+    compressedSizeDetail.textContent = `${fileSizeKB} KB`;
+    
+    // Update dimensions
+    compressedDimensions.textContent = `${compressedImg.naturalWidth} × ${compressedImg.naturalHeight}`;
+    
+    // Calculate and display savings
+    const savings = ((originalSizeBytes - compressedSizeBytes) / originalSizeBytes * 100).toFixed(1);
+    compressionRate.textContent = `${savings}%`;
+    savingsPercent.textContent = `${savings}% saved`;
+    
+    // Show quality indicator
+    const quality = parseInt(qualitySlider.value);
+    let qualityText = 'High';
+    let qualityColor = '#4CAF50';
+    
+    if (quality < 20) {
+        qualityText = 'Very Low';
+        qualityColor = '#F44336';
+    } else if (quality < 40) {
+        qualityText = 'Low';
+        qualityColor = '#FF9800';
+    } else if (quality < 60) {
+        qualityText = 'Medium';
+        qualityColor = '#FFC107';
+    } else if (quality < 80) {
+        qualityText = 'Good';
+        qualityColor = '#8BC34A';
+    }
+    
+    // Animate the compression rate
+    compressionRate.style.color = qualityColor;
+    compressionRate.classList.add('updated');
+    setTimeout(() => compressionRate.classList.remove('updated'), 1000);
+    
+    // Update compression button text with quality info
+    compressBtn.innerHTML = `<i class="fas fa-compress-alt"></i> Re-compress (${qualityText} Quality)`;
+}
+
+// Setup Download
+function setupDownload(blobUrl) {
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const quality = parseInt(qualitySlider.value);
+    const qualityLabel = quality >= 80 ? 'high' : quality >= 60 ? 'good' : quality >= 40 ? 'medium' : 'low';
+    const filename = `compressed_${qualityLabel}_quality_${timestamp}.${currentFormat}`;
+    
+    downloadBtn.href = blobUrl;
+    downloadBtn.download = filename;
+    
+    // Update download button text
+    downloadBtn.innerHTML = `<i class="fas fa-download"></i> Download (${currentFormat.toUpperCase()})`;
+}
+
+// Reset Application
+function resetApp() {
+    // Reset file input
+    upload.value = '';
+    selectedFile = null;
+    compressedFile = null;
+    
+    // Reset images
+    originalImg.src = '#';
+    originalImg.onload = null;
+    compressedImg.src = '#';
+    compressedImg.onload = null;
+    
+    // Reset controls
+    qualitySlider.value = 60;
+    updateQualityDisplay();
+    
+    // Reset format buttons
+    formatButtons.forEach(btn => {
+        if (btn.dataset.format === 'jpg') {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    currentFormat = 'jpg';
+    
+    // Reset checkboxes
+    keepMetadataCheckbox.checked = true;
+    autoCompressCheckbox.checked = false;
+    
+    // Hide sections
+    controls.classList.add('hidden');
+    previewArea.classList.add('hidden');
+    
+    // Reset text displays
+    originalSize.textContent = '0 KB';
+    compressedSize.textContent = '0 KB';
+    originalSizeDetail.textContent = '0 KB';
+    compressedSizeDetail.textContent = '0 KB';
+    originalDimensions.textContent = '-';
+    compressedDimensions.textContent = '-';
+    compressionRate.textContent = '0%';
+    savingsPercent.textContent = '0% saved';
+    
+    // Reset compression button
+    compressBtn.innerHTML = '<i class="fas fa-compress-alt"></i> Compress Image';
+    compressBtn.disabled = false;
+    
+    // Clear any existing notifications
+    const existingNotifications = document.querySelectorAll('.custom-notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    showNotification('Reset completed. Ready for new image!', 'success');
+}
+
+// Share Result
+function shareResult() {
+    if (!compressedFile) {
+        showNotification('No compressed image to share!', 'warning');
+        return;
+    }
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Compressed Image',
+            text: `I just compressed an image to ${compressedFile.size / 1024}KB (${parseInt(qualitySlider.value)}% quality) using ImageCompressor.pro`,
+            files: [compressedFile]
+        }).catch(console.error);
+    } else {
+        // Fallback: Copy download link to clipboard
+        const tempInput = document.createElement('input');
+        tempInput.value = window.location.href;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        showNotification('Link copied to clipboard! Share this tool with others!', 'success');
+    }
+}
+
+// Upload Success Animation
+function showUploadSuccess() {
+    uploadArea.classList.add('success-animation');
+    setTimeout(() => uploadArea.classList.remove('success-animation'), 1000);
+}
+
+// Compression Success Animation
+function showCompressionSuccess() {
+    const comparisonArrow = document.querySelector('.comparison-arrow');
+    if (comparisonArrow) {
+        comparisonArrow.classList.add('success-animation');
+        setTimeout(() => comparisonArrow.classList.remove('success-animation'), 1000);
+    }
+}
+
+// Notification System
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotification = document.querySelector('.custom-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `custom-notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${getNotificationIcon(type)}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Add Dynamic Styles
+function addDynamicStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Range slider styling */
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #4361ee 60%, #e0e0e0 60%);
+            outline: none;
+            margin: 15px 0;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4361ee;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .range-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4361ee;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        /* Animation classes */
+        .visible {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .drag-over {
+            border-color: #4361ee !important;
+            background-color: rgba(67, 97, 238, 0.05) !important;
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        
+        .success-animation {
+            animation: pulseSuccess 1s ease;
+        }
+        
+        .pulse {
+            animation: pulse 0.3s ease;
+        }
+        
+        .updated {
+            animation: scaleUp 0.5s ease;
+        }
+        
+        /* Control value styling */
+        .control-value {
+            font-weight: 600;
+            color: #4361ee;
+            font-size: 1.1em;
+            min-width: 50px;
+            text-align: right;
+            transition: all 0.3s ease;
+        }
+        
+        /* Notifications */
+        .custom-notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            color: #1a1a2e;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #4361ee;
+            max-width: 400px;
+        }
+        
+        .custom-notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification-success {
+            border-left-color: #4CAF50;
+        }
+        
+        .notification-error {
+            border-left-color: #f44336;
+        }
+        
+        .notification-warning {
+            border-left-color: #FF9800;
+        }
+        
+        .custom-notification i {
+            font-size: 20px;
+        }
+        
+        .notification-success i {
+            color: #4CAF50;
+        }
+        
+        .notification-error i {
+            color: #f44336;
+        }
+        
+        .notification-warning i {
+            color: #FF9800;
+        }
+        
+        /* Keyframes */
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -274,8 +693,15 @@ function addPageAnimations() {
             }
         }
         
-        .pulse {
-            animation: pulse 0.3s ease;
+        @keyframes pulseSuccess {
+            0%, 100% { 
+                box-shadow: 0 4px 16px rgba(0,0,0,0.1); 
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 4px 30px rgba(67, 97, 238, 0.4);
+                transform: scale(1.02);
+            }
         }
         
         @keyframes pulse {
@@ -283,166 +709,94 @@ function addPageAnimations() {
             50% { transform: scale(1.1); }
         }
         
-        .file-selected {
-            animation: successPulse 1s ease;
+        @keyframes scaleUp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
         
-        @keyframes successPulse {
-            0%, 100% { border-color: #4361ee; }
-            50% { border-color: #4CAF50; }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .custom-notification {
+                left: 20px;
+                right: 20px;
+                transform: translateY(-150%);
+            }
+            
+            .custom-notification.show {
+                transform: translateY(0);
+            }
+            
+            .control-value {
+                font-size: 1em;
+            }
         }
+        
+        /* Quality level indicators */
+        .quality-low { color: #F44336; }
+        .quality-medium { color: #FF9800; }
+        .quality-good { color: #8BC34A; }
+        .quality-high { color: #4CAF50; }
     `;
+    
     document.head.appendChild(style);
 }
 
-// Tooltip system
-function setupTooltips() {
-    // Add tooltips to buttons
-    const buttons = document.querySelectorAll('button, .upload-btn, .download-btn');
-    buttons.forEach(button => {
-        if (button.title) {
-            createTooltip(button);
-        }
-    });
+// Quality-based color coding for compression rate
+function getQualityColor(quality) {
+    if (quality >= 80) return '#4CAF50';
+    if (quality >= 60) return '#8BC34A';
+    if (quality >= 40) return '#FFC107';
+    if (quality >= 20) return '#FF9800';
+    return '#F44336';
 }
 
-function createTooltip(element) {
-    element.addEventListener('mouseenter', function(e) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tooltip';
-        tooltip.textContent = this.title;
-        document.body.appendChild(tooltip);
-        
-        const rect = this.getBoundingClientRect();
-        tooltip.style.left = `${rect.left + rect.width / 2}px`;
-        tooltip.style.top = `${rect.top - 10}px`;
-        tooltip.style.transform = 'translateX(-50%) translateY(-100%)';
-        
-        this._tooltip = tooltip;
-    });
-    
-    element.addEventListener('mouseleave', function() {
-        if (this._tooltip) {
-            this._tooltip.remove();
-            delete this._tooltip;
-        }
-    });
-}
-
-// Animation functions for compression process
-function showLoadingAnimation(button) {
-    if (!button) return;
-    
-    const originalText = button.innerHTML;
-    button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Compressing...`;
-    button.disabled = true;
-    
-    return function() {
-        button.innerHTML = originalText;
-        button.disabled = false;
-    };
-}
-
-function showSuccessAnimation(element) {
-    element.classList.add('success-animation');
-    setTimeout(() => element.classList.remove('success-animation'), 1000);
-}
-
-function updateCompressionStats(originalSize, compressedSize) {
-    const savingsPercent = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
-    const compressionRate = document.getElementById('compressionRate');
-    const savingsPercentElement = document.getElementById('savingsPercent');
-    
-    if (compressionRate) {
-        compressionRate.textContent = `${savingsPercent}%`;
-        compressionRate.classList.add('updated');
-        setTimeout(() => compressionRate.classList.remove('updated'), 1000);
-    }
-    
-    if (savingsPercentElement) {
-        savingsPercentElement.textContent = `${savingsPercent}% saved`;
-    }
-}
-
-// Helper functions
-function animateUploadSuccess() {
-    const uploadBox = document.querySelector('.upload-box');
-    if (uploadBox) {
-        uploadBox.classList.add('success-animation');
-        setTimeout(() => uploadBox.classList.remove('success-animation'), 1000);
-    }
-}
-
-function animateDropSuccess() {
-    const uploadBox = document.querySelector('.upload-box');
-    if (uploadBox) {
-        // Add bounce animation
-        uploadBox.style.animation = 'bounce 0.5s ease';
-        setTimeout(() => {
-            uploadBox.style.animation = '';
-        }, 500);
-    }
-}
-
-// Add bounce animation CSS
-const bounceCSS = `
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-    
-    .success-animation {
-        animation: success 1s ease;
-    }
-    
-    @keyframes success {
-        0%, 100% { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); }
-        50% { box-shadow: 0 4px 30px rgba(76, 175, 80, 0.4); }
-    }
-    
-    .updated {
-        animation: updated 0.5s ease;
-    }
-    
-    @keyframes updated {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-    
-    .tooltip {
-        position: fixed;
-        background: #1a1a2e;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        pointer-events: none;
-        z-index: 1000;
-        white-space: nowrap;
-    }
-    
-    .tooltip::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 5px 5px 0;
-        border-style: solid;
-        border-color: #1a1a2e transparent transparent;
-    }
-`;
-
-// Add animations CSS to document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = bounceCSS;
-document.head.appendChild(styleSheet);
-
-// Export functions for use in compressor.js
-window.uiEnhancements = {
-    showLoadingAnimation,
-    showSuccessAnimation,
-    updateCompressionStats,
-    animateUploadSuccess,
-    animateDropSuccess
+// Export functions if needed
+window.ImageCompressor = {
+    compressImage,
+    resetApp,
+    validateFile,
+    showNotification,
+    updateQualityDisplay
 };
+
+// Fix navigation links
+document.addEventListener('DOMContentLoaded', function() {
+    // Fix "All Tools" links
+    const allToolsLinks = document.querySelectorAll('a[href*="index.html"], a[href="../index.html"], a[href*="home"]');
+    
+    allToolsLinks.forEach(link => {
+        if (link.textContent.includes('All Tools') || link.textContent.includes('Home') || 
+            link.getAttribute('href').includes('index.html')) {
+            
+            // Remove existing href
+            link.removeAttribute('href');
+            
+            // Add click handler
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Try multiple methods to go to main page
+                try {
+                    // Method 1: Try root path
+                    window.location.href = '/index.html';
+                } catch (err1) {
+                    try {
+                        // Method 2: Try relative path
+                        window.location.href = '../index.html';
+                    } catch (err2) {
+                        try {
+                            // Method 3: Try two levels up
+                            window.location.href = '../../index.html';
+                        } catch (err3) {
+                            // Method 4: Try current directory
+                            window.location.href = './index.html';
+                        }
+                    }
+                }
+            });
+            
+            // Add cursor pointer
+            link.style.cursor = 'pointer';
+        }
+    });
+});
